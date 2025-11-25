@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Simple Online Store</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Online Store</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f5f5f5; }
         header { background: #222; color: #fff; padding: 20px; text-align: center; }
@@ -16,7 +16,12 @@
         .btn { display: block; width: 100%; padding: 10px; margin-top: 10px; background: #007bff; color: #fff; text-align: center; border-radius: 5px; text-decoration: none; }
         .btn:hover { background: #0056b3; }
         footer { margin-top: 40px; text-align: center; padding: 20px; background: #222; color:#fff; }
+        form { background: #fff; padding: 20px; border-radius: 10px; margin-top: 40px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        form input, form textarea, form select { width: 100%; padding: 10px; margin: 5px 0; border-radius: 5px; border: 1px solid #ccc; }
+        form button { background: #28a745; color: #fff; padding: 10px; border: none; border-radius: 5px; cursor: pointer; }
+        form button:hover { background: #218838; }
     </style>
+    <script src="https://www.paypal.com/sdk/js?client-id=YOUR_PAYPAL_CLIENT_ID"></script>
 </head>
 <body>
     <header>
@@ -25,33 +30,60 @@
 
     <div class="container">
         <h2>Our Products</h2>
-
         <div class="products">
             <div class="card">
                 <img src="https://via.placeholder.com/300x200" alt="Product 1">
                 <h3>Product 1</h3>
                 <p>$20 - High quality product.</p>
-                <a href="#" class="btn">Add to Cart</a>
+                <div id="paypal-button-1"></div>
             </div>
-
             <div class="card">
                 <img src="https://via.placeholder.com/300x200" alt="Product 2">
                 <h3>Product 2</h3>
                 <p>$35 - Best seller item.</p>
-                <a href="#" class="btn">Add to Cart</a>
+                <div id="paypal-button-2"></div>
             </div>
-
             <div class="card">
                 <img src="https://via.placeholder.com/300x200" alt="Product 3">
                 <h3>Product 3</h3>
                 <p>$50 - Limited stock available.</p>
-                <a href="#" class="btn">Add to Cart</a>
+                <div id="paypal-button-3"></div>
             </div>
         </div>
+
+        <h2>Cash on Delivery</h2>
+        <form action="mailto:youremail@example.com" method="POST" enctype="text/plain">
+            <label for="name">Full Name:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="phone">Phone Number:</label>
+            <input type="text" id="phone" name="phone" required>
+
+            <label for="address">Delivery Address:</label>
+            <textarea id="address" name="address" rows="3" required></textarea>
+
+            <label for="product">Product:</label>
+            <select id="product" name="product" required>
+                <option value="Product 1">Product 1 - $20</option>
+                <option value="Product 2">Product 2 - $35</option>
+                <option value="Product 3">Product 3 - $50</option>
+            </select>
+
+            <button type="submit">Place Order (COD)</button>
+        </form>
     </div>
 
     <footer>
         <p>© 2025 My Online Store. All rights reserved.</p>
     </footer>
+
+    <script>
+        // PayPal Buttons
+        paypal.Buttons({ createOrder: function(data, actions) { return actions.order.create({ purchase_units: [{ amount: { value: '20.00' } }] }); }, onApprove: function(data, actions) { return actions.order.capture().then(function(details) { alert('Payment completed by ' + details.payer.name.given_name); }); } }).render('#paypal-button-1');
+
+        paypal.Buttons({ createOrder: function(data, actions) { return actions.order.create({ purchase_units: [{ amount: { value: '35.00' } }] }); }, onApprove: function(data, actions) { return actions.order.capture().then(function(details) { alert('Payment completed by ' + details.payer.name.given_name); }); } }).render('#paypal-button-2');
+
+        paypal.Buttons({ createOrder: function(data, actions) { return actions.order.create({ purchase_units: [{ amount: { value: '50.00' } }] }); }, onApprove: function(data, actions) { return actions.order.capture().then(function(details) { alert('Payment completed by ' + details.payer.name.given_name); }); } }).render('#paypal-button-3');
+    </script>
 </body>
 </html>
